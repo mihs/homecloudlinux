@@ -1,0 +1,30 @@
+version: '2.3'
+services:
+  nextcloud:
+    image: nextcloud
+    restart: always
+    ports:
+      - 8084:80
+    environment:
+      POSTGRES_DB: nextcloud
+      POSTGRES_USER: nextcloud
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST: 172.16.0.1
+    volumes:
+      - /srv/data/nextcloud:/var/www/html
+    networks:
+      shared:
+        ipv4_address: 172.16.0.2
+networks:
+  shared:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "false"
+      com.docker.network.bridge.enable_icc: "true"
+      com.docker.network.bridge.enable_ip_masquerade: "true"
+      com.docker.network.bridge.host_binding_ipv4: 172.16.0.1
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.16.0.0/24
+        gateway: 172.16.0.1
